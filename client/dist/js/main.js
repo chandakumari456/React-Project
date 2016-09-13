@@ -20765,11 +20765,20 @@ var React = require('react');
 var Comment = React.createClass({displayName: "Comment",
   render:function(){
     return (
-      React.createElement("div", {className: "comment"}, 
-      React.createElement("h2", {className: "commentAuthor"}, 
-          this.props.author
-      ), 
-      this.props.children
+      React.createElement("div", {className: "row", id: "poster"}, 
+        React.createElement("div", {className: "col-sm-6"}, 
+          React.createElement("img", {src: this.props.children})
+        ), 
+        React.createElement("div", {className: "col-sm-6"}, 
+          React.createElement("h4", {className: "title"}, 
+              this.props.title
+          ), 
+          React.createElement("ul", {className: "title"}, 
+          React.createElement("li", null, "Year :", this.props.year), 
+          React.createElement("li", null, "Type :", this.props.type)
+          )
+
+        )
       )
     );
   }
@@ -20781,7 +20790,7 @@ var React = require('react');
 
 var CommentButton = React.createClass({displayName: "CommentButton",
   getInitialState:function(){
-    return {author: ''};
+    return {author:''};
   },
   handleAuthorChange: function(e) {
     this.setState({author: e.target.value});
@@ -20791,17 +20800,12 @@ var CommentButton = React.createClass({displayName: "CommentButton",
   },
   render:function(){
     return(
-      React.createElement("div", null, 
-      React.createElement("h2", null, "Click on button to see new value"), 
-      React.createElement("input", {
-        type: "text", 
-        placeholder: "Your name", 
-        value: this.state.author, 
-        onChange: this.handleAuthorChange}
-      ), 
-      React.createElement("input", {type: "button", onClick: this.sendDataToParent, value: "Click Me"})
+      React.createElement("div", {className: "jumbotron"}, 
+      React.createElement("h2", {id: "heading"}, "\"IMDB Movie Search Online\""), 
+      React.createElement("input", {id: "textbox", type: "text", placeholder: "Search your movie here...", value: this.state.author, onChange: this.handleAuthorChange}), 
+      React.createElement("input", {type: "button", onClick: this.sendDataToParent, value: "Click Me", id: "searchButton"})
       )
-    );
+    )
   }
 });
 
@@ -20858,9 +20862,9 @@ var CommentList = React.createClass({displayName: "CommentList",
 render:function(){
   var commentNodes=this.props.data.map(function(comment){
     return (
-      React.createElement("div", null, 
-      React.createElement(Comment, {key: comment.id, author: comment.author}, 
-       comment.text
+      React.createElement("div", {className: "col-sm-6"}, 
+      React.createElement(Comment, {key: comment.imdbID, title: comment.Title, year: comment.Year, type: comment.Type}, 
+       comment.Poster
       )
       )
     );
@@ -20868,8 +20872,7 @@ render:function(){
 
 
   return(
-    React.createElement("div", {className: "commentList"}, 
-    React.createElement("h4", null, "your value from button : ", this.props.value), 
+    React.createElement("div", {className: "row"}, 
       commentNodes
     )
   );
@@ -20886,24 +20889,30 @@ var CommentButton = require('./component/CommentButton');
 
 var CommentBox = React.createClass({displayName: "CommentBox",
   getInitialState:function(){
-    return {data:[{id: 1, author: "Chanda Kumari", text: "This is first comment"},
-                  {id: 2, author: "Ravi Singh",    text: "This is second comment"}],
-            buttonValue:"present state"
-                };
+    return {data:[], url:"http://omdbapi.com/?s="};
   },
   changeValue:function(value){
-    var data1 = [
-      {id: 3, author: "Pete Hunt", text: "This is one comment"},
-      {id: 4, author: "Jordan Walke", text: "This is another comment"}
-    ];
-    this.setState({data: data1,buttonValue:value});
+    $.ajax({
+      url: this.state.url + value,
+      method:'GET',
+      dataType: 'json',
+      cache: false,
+      success: function(data1) {
+        console.log("value from server");
+        console.log(data1);
+        this.setState({data: data1.Search});
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.state.url, status, err.toString());
+      }.bind(this)
+    });
   },
   render: function(){
     return (
       React.createElement("div", null, 
-      React.createElement(CommentList, {data: this.state.data, value: this.state.buttonValue}), 
+      React.createElement(CommentButton, {changeValue: this.changeValue}), 
+      React.createElement(CommentList, {data: this.state.data})
 
-      React.createElement(CommentButton, {changeValue: this.changeValue})
       )
     )
   }

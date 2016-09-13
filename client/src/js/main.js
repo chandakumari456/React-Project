@@ -6,29 +6,35 @@ var CommentButton = require('./component/CommentButton');
 
 var CommentBox = React.createClass({
   getInitialState:function(){
-    return {data:[{id: 1, author: "Chanda Kumari", text: "This is first comment"},
-                  {id: 2, author: "Ravi Singh",    text: "This is second comment"}],
-            buttonValue:"present state"
-                };
+    return {data:[], url:"http://omdbapi.com/?s="};
   },
   changeValue:function(value){
-    var data1 = [
-      {id: 3, author: "Pete Hunt", text: "This is one comment"},
-      {id: 4, author: "Jordan Walke", text: "This is another comment"}
-    ];
-    this.setState({data: data1,buttonValue:value});
+    $.ajax({
+      url: this.state.url + value,
+      method:'GET',
+      dataType: 'json',
+      cache: false,
+      success: function(data1) {
+        console.log("value from server");
+        console.log(data1);
+        this.setState({data: data1.Search});
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.state.url, status, err.toString());
+      }.bind(this)
+    });
   },
   render: function(){
     return (
       <div>
-      <CommentList data={this.state.data} value={this.state.buttonValue}/>
-
       <CommentButton changeValue={this.changeValue}/>
+      <CommentList data={this.state.data} />
+
       </div>
     )
   }
 });
 
 ReactDOM.render(
-  <CommentBox />,document.getElementById('app')
+  <CommentBox/>,document.getElementById('app')
 );

@@ -1,0 +1,54 @@
+.jumbotron{
+	margin-top: 0;
+	margin-bottom: 35px;
+}
+
+#logo{
+	width: 100px;
+	height: 100px;
+	float: left;
+}
+#poster{
+	height: 300px;
+	width: 350px;
+}
+.title{
+	margin-left: 150px;
+	width: 230px;
+}
+img{
+	height:250px;
+	width:300px;
+}
+.col-sm-6{
+	width: 49%;
+}
+.row{
+	margin-left: 15px;
+	margin-right: 15px;
+}
+#searchButton
+{
+	display:inline-block;
+	width: 100px;
+	height: 50px;
+
+}
+#searchBox
+{
+	margin-right: 10px;
+	margin-left: 10px;
+	padding-left: 700px;
+	padding-bottom: 30px;
+}
+#textbox{
+	margin-top: 40px;
+	margin-left: 400px;
+	width:540px;
+}
+
+#heading
+{
+
+	text-align: center;
+}
